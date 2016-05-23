@@ -129,15 +129,98 @@
 
 <p>所有需要传member_id 和token的api都可以省略这两个参数</p>
 
+<p>所有接口返回的status暂时保留，其含义及对应的status code如下：</p>
+
+<p>status code 200</p>
+
+<p>status: 301  status code: 200  // 账号已注册</p>
+
+<p>status code 400</p>
+
+<p>status: -400  status code: 400  // 用户请求错误（须提示用户）</p>
+
+<p>status: -408  status code: 400  // 超过字数限制</p>
+
+<p>status: -409  status code: 400  // 含有敏感词</p>
+
+<p>status: -411  status code: 400  // 当天发短信次数用完（一个手机号一天最多发送3次）</p>
+
+<p>status: -412  status code: 400  // 短信已发送（一分钟内不能重复发送）</p>
+
+<p>status: -413  status code: 400  // 短信验证码错误</p>
+
+<p>status: -414  status code: 400  // 用户名含有禁用词</p>
+
+<p>status: -415  status code: 400  // 账号未注册</p>
+
+<p>status: -416  status code: 400  // 密码错误</p>
+
+<p>status: -417  status code: 400  // 邀请码错误或已失效</p>
+
+<p>status code 401</p>
+
+<p>status: -401  status code: 401  // 未授权（未登录）</p>
+
+<p>status code 403</p>
+
+<p>status: -402  status code: 403  // 未设置性取向</p>
+
+<p>status: -403  status code: 403  // 账号被禁言</p>
+
+<p>status: -405  status code: 403  // 性别未审核</p>
+
+<p>status: -406  status code: 403  // 性别审核中</p>
+
+<p>status: -407  status code: 403  // 性别为男</p>
+
+<p>status code 404</p>
+
+<p>status: -404  status code: 404  // 客户端请求错误（不须提示用户）</p>
+
+<h1 id="cached_data">关于cached_data</h1>
+
+<p>Auth/tokenRefresh Passport/register Passport/login Passport/resetPasswd
+以上接口均会返回前端需要缓存的数据，如下：
+<code class="prettyprint">json
+{
+    &quot;status&quot;: &quot;1&quot;,
+    &quot;data&quot;: {
+        &quot;token&quot;: (app_token)
+        &quot;member_id&quot;: (用户ID)
+        &quot;nickname&quot;: (用户昵称)
+        &quot;sex&quot;: (用户性别，0：未设置，1：女性，2：男性，3：审核中)
+        &quot;sexfav&quot;: (用户性趣，0：未设置，1：女女，2：男女，3：不限)
+        &quot;vip&quot;: (用户等级，0：普通，1：红人，2：大V)
+        &quot;status&quot;: (账号状态，0：被禁言，1：正常)
+        &quot;avatar&quot;: (用户头像地址)
+        &quot;push_tags&quot;: (消息推送标签)array
+        &quot;push_alias&quot;: (消息推送别名)
+        &quot;maxlen_article&quot;: (帖子字数限制)
+        &quot;maxlen_comment&quot;: (评论字数限制)
+        &quot;maxlen_username&quot;: (用户名字数限制)
+        &quot;maxlen_usersign&quot;: (用户签名字数限制)
+        &quot;maxlen_feedback&quot;: (反馈字数限制)
+    },
+    &quot;msg&quot;: &quot;succ&quot;
+}
+</code></p>
+
 <h1 id="authentication">Authentication</h1>
 
-<p>移动api需要先通过app authenticate拿到app token, 然后登录获取user token.</p>
+<p>除Auth/appAuth（请求app_token）接口外，其他所有非登录操作调用接口时均必须在Authorization Header中附上app_token方可取得请求权限，否则将返回404 Not Found。</p>
+
+<p>若登录成功（包括注册成功、重置密码成功、登录成功），Response Header中的Authorization则被替换为user_token，所有登录操作调用接口时均必须在Authorization Header中附上user_token。
+user_token有两种过期时间，分别为access_expire和refresh_expire，均为时间戳，单位为秒，access_expire为7天，refresh_expire为180天。</p>
+
+<p>如果access_expire已过期而refresh_expire未过期，则返回402 User Token Expired，此时客户端应请求续期接口（Auth/tokenRefresh）获取新的user_token；</p>
+
+<p>如果refresh_expire已过期（或因为其他原因导致user_token失效），则返回401 Unauthorized，此时客户端应在下一次请求的Request Header的Authorization中提交有效的app_token，此时可执行非登录操作；若仍返回401 Unauthorized，则需要重新登录。</p>
+
+<p>如果在Request Header的Authorization中提交了有效的app_token（即客户端处于非登录状态），若要执行任何必须登录的操作，相应的接口将返回401。</p>
 
 <h2 id="get-app-authenticate">[GET] App authenticate</h2>
 
-<p>通过事先分配的app_key和app_secret获取对应token。</p>
-
-<p>ios和android第一次认证通过会返回refresh_token, 须安全保存, token过期的话，可携带refresh_token再次调用此接口，获得新的token.</p>
+<p>通过事先分配的client_id和secret获取对应app token。</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
@@ -166,8 +249,6 @@
 
 <h3 id="response">RESPONSE</h3>
 
-<p>mod=2或1或0 （0或1没有msg，默认为0）</p>
-
 <table><thead>
 <tr>
 <th>Status code</th>
@@ -179,7 +260,7 @@
 <td>Token</td>
 </tr>
 <tr>
-<td>403</td>
+<td>404</td>
 <td>Wrong</td>
 </tr>
 </tbody></table>
@@ -192,26 +273,56 @@
     </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"token"</span><span class="p">:</span><span class="w"> </span><span class="err">(app_token)</span><span class="w">
     </span><span class="p">},</span><span class="w">
-    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
 <h2 id="get-token">[GET] 用户token续期</h2>
 
-<p>通过app认证返回的refresh token 续期用户token.</p>
+<p>通过app认证返回的user token 续期user token.</p>
+
+<p>ios和android第一次认证通过会返回user token, 须安全保存, user token过期的话，可携带user token调用此接口，获得新的user token.</p>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status code</th>
+<th>Body</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>Token</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Wrong</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="err">(cached_data)</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
 <p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Auth/tokenRefresh</code></p>
 
-<p>此接口没有参数，只须在请求头部带上原来的user_token</p>
+<p>此接口没有参数，只须在请求头部带上原来的user token</p>
 
 <h1 id="mobile">Mobile</h1>
 
 <aside class="notice">
 统一前缀为 `http://test.yummylife.net/index.php?s=/V2/`
 节点请求都必须在 headers 携带 app authentication 返回的 
-app_token
+app token或者user token
 </aside>
 
 <h2 id="get-input-imput">[GET] input手机或邮箱，验证账户状态（imput）</h2>
@@ -972,11 +1083,172 @@ app_token
 
 <h1 id="live-telecast">Live Telecast</h1>
 
-<h2 id="get-living-list">[GET] living频道list</h2>
+<h2 id="get-list">[GET] 直播频道list</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
-<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfLive</code></p>
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/homepage</code></p>
+
+<p>分轮播图、直播列表两部分</p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td></td>
+<td>可选，默认为1，表示页码</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1463986319"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"slider"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"想要这样的玩具吗"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_5c166800bf5100078f415185ea7ddfea281c96b181874d2ea82d676b91b1f6e9?imageView2/2/w/750"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"live"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a?201605231451&amp;imageView2/2/w/500"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052314&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"124"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a?201605231451&amp;imageView2/2/w/500"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052314&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"id_group"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123,124"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
+</span><span class="p">}</span><span class="w"> 
+</span></code></pre>
+
+<h2 id="get-amp">[GET] 用户占座过的直播列表&amp;主播发起过的直播列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p>用户占座过的</p>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfSeats</code></p>
+
+<p>主播发起过的</p>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfMC</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>uid</td>
+<td>*</td>
+<td>用户ID</td>
+</tr>
+<tr>
+<td>page</td>
+<td></td>
+<td>可选，默认为1，表示页码</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1463987829"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"live"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"124"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a?201605231517&amp;imageView2/2/w/500"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"101"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"亲密亲密"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447003250"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a?201605231517&amp;imageView2/2/w/500"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"id_group"</span><span class="p">:</span><span class="w"> </span><span class="s2">"124,101"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h2 id="get-living-detail">[GET] living频道detail</h2>
 
@@ -1074,11 +1346,78 @@ app_token
 
 <h2 id="get-discover">[GET] discover频道列表</h2>
 
-<p>此接口返回的主题列表中，第一个主题为推荐频道置顶主题，点击此主题时应跳转到推荐频道主题列表页，而不是主题详情页</p>
+<p>分轮播图、达人列表、话题组三部分</p>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
-<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfDiscovery</code>     </p>
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/discovery</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<p>None</p>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"slider"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"停车坐爱枫林晚"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_79a972a0c15dcc30052767c609d0786e369224dc4292d8d4b6cd898b61fc21e7?imageView2/2/w/750"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"stars"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"group"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"tag_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"情感"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"theme"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                    </span><span class="p">{</span><span class="w">
+                        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"93"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"就爱它的美"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_add4b0b2f0368041003b6fa57b93b7a464eafe75cda3399769fa80f27d0196b1?201605231502&amp;imageView2/2/h/210"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 达人列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/User/stars</code></p>
 
 <h3 id="query-parameters">Query Parameters</h3>
 
@@ -1090,44 +1429,28 @@ app_token
 </tr>
 </thead><tbody>
 <tr>
-<td>member_id</td>
-<td>*</td>
-<td>用户ID</td>
-</tr>
-<tr>
-<td>token</td>
+<td>type</td>
 <td></td>
-<td>Token</td>
+<td>可选，默认为3，表示达人类型，1：红人，2：大V，3：推荐</td>
 </tr>
 <tr>
 <td>page</td>
 <td></td>
-<td>表示第几页，默认为1</td>
-</tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
+<td>可选，默认为1，页码</td>
 </tr>
 </tbody></table>
 
 <h3 id="response">RESPONSE</h3>
 
-<p>mod=2或1 （1没有msg）</p>
-
 <table><thead>
 <tr>
-<th>Status</th>
+<th>Status Code</th>
 <th>Msg</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>-1</td>
+<td>404</td>
 <td>参数错误</td>
-</tr>
-<tr>
-<td>-2</td>
-<td>结果为空</td>
 </tr>
 </tbody></table>
 
@@ -1136,24 +1459,16 @@ app_token
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取帖子附属信息（在themeAtta接口中使用）</span><span class="w">
-        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-            </span><span class="p">{</span><span class="w">
-                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题ID</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题标题</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发布时间</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题配图完整地址</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"mc_name"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主播名字</span><span class="p">]</span><span class="err">（用于直播频道）</span><span class="w">
-                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="p">{</span><span class="w">
-                </span><span class="err">……（下一条）</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-        </span><span class="p">]</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"341"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"喻忘忧"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"你的名字是我不肯分享的珍宝。"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_8225022633bfa4328f926390ed2a95a2f70dede44c051306058d71447eeff901?2016052315&amp;imageView2/0/h/100"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
