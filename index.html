@@ -179,20 +179,31 @@
 
 <h1 id="cached_data">关于cached_data</h1>
 
-<p>Auth/tokenRefresh Passport/register Passport/login Passport/resetPasswd
-以上接口均会返回前端需要缓存的数据，如下：
+<p>Auth/tokenRefresh Passport/register Passport/login Passport/resetPasswd</p>
+
+<blockquote>
+<p>以上接口均会返回前端需要缓存的数据，如下：
 <code class="prettyprint">json
 {
     &quot;status&quot;: &quot;1&quot;,
     &quot;data&quot;: {
-        &quot;token&quot;: (app_token)
         &quot;member_id&quot;: (用户ID)
         &quot;nickname&quot;: (用户昵称)
         &quot;sex&quot;: (用户性别，0：未设置，1：女性，2：男性，3：审核中)
         &quot;sexfav&quot;: (用户性趣，0：未设置，1：女女，2：男女，3：不限)
+        &quot;signature&quot;: (用户签名),
         &quot;vip&quot;: (用户等级，0：普通，1：红人，2：大V)
         &quot;status&quot;: (账号状态，0：被禁言，1：正常)
         &quot;avatar&quot;: (用户头像地址)
+        &quot;mypost&quot;: &quot;25&quot;,
+        &quot;favorite&quot;: &quot;54&quot;,
+        &quot;zantoy&quot;: &quot;2&quot;,
+        &quot;zancommended&quot;: &quot;0&quot;,
+        &quot;follow&quot;: &quot;0&quot;,
+        &quot;fans&quot;: &quot;4&quot;,
+        &quot;invitcode&quot;: &quot;dzblr0&quot;,
+        &quot;showApplyVIP&quot;: &quot;0&quot;,
+        &quot;reviewApplyVIP&quot;: &quot;0&quot;,
         &quot;push_tags&quot;: (消息推送标签)array
         &quot;push_alias&quot;: (消息推送别名)
         &quot;maxlen_article&quot;: (帖子字数限制)
@@ -200,14 +211,17 @@
         &quot;maxlen_username&quot;: (用户名字数限制)
         &quot;maxlen_usersign&quot;: (用户签名字数限制)
         &quot;maxlen_feedback&quot;: (反馈字数限制)
+        &quot;token&quot;: (app_token)
     },
     &quot;msg&quot;: &quot;succ&quot;
 }
 </code></p>
+</blockquote>
 
 <h1 id="authentication">Authentication</h1>
 
-<p>除Auth/appAuth（请求app_token）接口外，其他所有非登录操作调用接口时均必须在Authorization Header中附上app_token方可取得请求权限，否则将返回404 Not Found。</p>
+<p>除Auth/appAuth（请求app_token）接口外，其他所有非登录操作调用接口时均必须在Authorization Header中附上app_token方可取得请求权限，否则将返回404 Not Found。
+如果由于更换client_id和secret导致原app_token失效，将返回402 Token Expired。</p>
 
 <p>若登录成功（包括注册成功、重置密码成功、登录成功），Response Header中的Authorization则被替换为user_token，所有登录操作调用接口时均必须在Authorization Header中附上user_token。
 user_token有两种过期时间，分别为access_expire和refresh_expire，均为时间戳，单位为秒，access_expire为7天，refresh_expire为180天。</p>
@@ -1121,6 +1135,26 @@ app token或者user token
 </tr>
 </tbody></table>
 
+<p>轮播图跳转类型：</p>
+
+<p>topic : 普通主题</p>
+
+<p>gesture ： 姿势</p>
+
+<p>toy ： 玩具</p>
+
+<p>daily ： 日报</p>
+
+<p>live ： 直播</p>
+
+<p>play ： 玩儿</p>
+
+<p>none ： 不跳转</p>
+
+<p>outer ： 外部网页</p>
+
+<p>article ： 帖子</p>
+
 <blockquote>
 <p>以上命令返回JSON的结构是这样的：</p>
 </blockquote>
@@ -1132,7 +1166,7 @@ app token或者user token
             </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"想要这样的玩具吗"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"live"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_5c166800bf5100078f415185ea7ddfea281c96b181874d2ea82d676b91b1f6e9?imageView2/2/w/750"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
@@ -1146,7 +1180,9 @@ app token或者user token
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052314&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"42"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"290"</span><span class="w">
             </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"124"</span><span class="p">,</span><span class="w">
@@ -1157,7 +1193,9 @@ app token或者user token
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052314&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"42"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"290"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
         </span><span class="nt">"id_group"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123,124"</span><span class="w">
@@ -1230,18 +1268,9 @@ app token或者user token
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="p">{</span><span class="w">
-                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"101"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"亲密亲密"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447003250"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a?201605231517&amp;imageView2/2/w/500"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"309"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"21"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
         </span><span class="nt">"id_group"</span><span class="p">:</span><span class="w"> </span><span class="s2">"124,101"</span><span class="w">
@@ -1255,6 +1284,79 @@ app token或者user token
 <h3 id="http-request">HTTP REQUEST</h3>
 
 <p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeDetailOfLive</code>        </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>id</td>
+<td>*</td>
+<td>直播（主题）ID</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="w">
+</span><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1464095146"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"theme"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"126"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播2.0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容\n\n直播内容直播内容直播内容直播内容\n\n\n直播内容直播内容直播内容"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_339636542ab6b4ee42540f0d930348aa2b42d39ca3f35f8b8f22e7bbb9d9620a"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"tag_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"u:d83du:de4f"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"previously"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                    </span><span class="p">{</span><span class="w">
+                        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"92"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"聊聊潮吹：让你爱如泉涌"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_a8d226fe1394c5d9b1c6ff11731485da3d755363a0aeab3cfb8010ea0591854b"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">],</span><span class="w">
+                </span><span class="nt">"followStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"push_tag"</span><span class="p">:</span><span class="w"> </span><span class="err">新消息提醒推送标签（string）</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"video"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://7xp6o0.media1.z0.glb.clouddn.com/demo.mov"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h2 id="get-seat">[GET] 占座(seat)</h2>
 
@@ -1370,6 +1472,26 @@ app token或者user token
 </tr>
 </tbody></table>
 
+<p>轮播图跳转类型：</p>
+
+<p>topic : 普通主题</p>
+
+<p>gesture ： 姿势</p>
+
+<p>toy ： 玩具</p>
+
+<p>daily ： 日报</p>
+
+<p>live ： 直播</p>
+
+<p>play ： 玩儿</p>
+
+<p>none ： 不跳转</p>
+
+<p>outer ： 外部网页</p>
+
+<p>article ： 帖子</p>
+
 <blockquote>
 <p>以上命令返回JSON的结构是这样的：</p>
 </blockquote>
@@ -1380,7 +1502,7 @@ app token或者user token
             </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"停车坐爱枫林晚"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"link_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"live"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_79a972a0c15dcc30052767c609d0786e369224dc4292d8d4b6cd898b61fc21e7?imageView2/2/w/750"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
@@ -1388,7 +1510,8 @@ app token或者user token
             </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eva"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="err">（0：普通；1：红人；2：大V）</span><span class="w">
+                </span><span class="nt">"followStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="err">（0：未关注；1：单向关注；2：互相关注）</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9?2016052315&amp;imageView2/0/h/100"</span><span class="w">
             </span><span class="p">}</span><span class="w">
         </span><span class="p">],</span><span class="w">
@@ -1403,6 +1526,7 @@ app token或者user token
                         </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_add4b0b2f0368041003b6fa57b93b7a464eafe75cda3399769fa80f27d0196b1?201605231502&amp;imageView2/2/h/210"</span><span class="p">,</span><span class="w">
                         </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
                         </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="err">（0：普通；1：红人；2：大V）</span><span class="w">
                         </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
                     </span><span class="p">}</span><span class="w">
                 </span><span class="p">]</span><span class="w">
@@ -1465,7 +1589,8 @@ app token或者user token
             </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"喻忘忧"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"你的名字是我不肯分享的珍宝。"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_8225022633bfa4328f926390ed2a95a2f70dede44c051306058d71447eeff901?2016052315&amp;imageView2/0/h/100"</span><span class="w">
+            </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/av_8225022633bfa4328f926390ed2a95a2f70dede44c051306058d71447eeff901?2016052315&amp;imageView2/0/h/100"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"followStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
         </span><span class="p">}</span><span class="w">
     </span><span class="p">],</span><span class="w">
     </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="w">
@@ -1477,6 +1602,60 @@ app token或者user token
 <h3 id="http-request">HTTP REQUEST</h3>
 
 <p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfCommended</code>     </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td></td>
+<td>表示第几页，默认为1</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1464752171"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"140"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"《丹麥女孩》：什麼時候我們能有不再是關於異性戀或順性別的酷兒電影？"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1457069029"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_ab236397479ff388e3a3721194f2cf4172d3fef1959ceb056e61bd8550ee0ae2"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"160"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h2 id="get-detail">[GET] 日报主题detail</h2>
 
@@ -1637,7 +1816,10 @@ app token或者user token
                 </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题配图完整地址</span><span class="p">]</span><span class="w">
                 </span><span class="s2">"mc_name"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主播名字</span><span class="p">]</span><span class="err">（用于直播频道）</span><span class="w">
                 </span><span class="s2">"mc_status"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">直播状态</span><span class="p">]</span><span class="err">（用于直播频道，</span><span class="mi">1</span><span class="err">表示进行中，</span><span class="mi">2</span><span class="err">表示未开始（预告中），</span><span class="mi">3</span><span class="err">表示已结束（回顾））</span><span class="w">
-                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="w">
+                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2515"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
             </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
@@ -1866,6 +2048,97 @@ app token或者user token
 <td>参数错误</td>
 </tr>
 </tbody></table>
+
+<h2 id="get">[GET]用户所有通知</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Notice/systemNoticeList</code></p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>member_id</td>
+<td>*</td>
+<td>用户ID</td>
+</tr>
+<tr>
+<td>token</td>
+<td>*</td>
+<td>用户token</td>
+</tr>
+<tr>
+<td>sexfav</td>
+<td>*</td>
+<td>用户的性趣</td>
+</tr>
+<tr>
+<td>page</td>
+<td></td>
+<td>第几页</td>
+</tr>
+<tr>
+<td>mod</td>
+<td></td>
+<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>-401</td>
+<td>未登录</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
+    </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">通知类型，comment:评论通知</span><span class="p">,</span><span class="err">zan:赞通知</span><span class="p">,</span><span class="err">system:群系统通知</span><span class="p">,</span><span class="err">user:个人系统通知</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"notice_id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">通知ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"read"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">是否已读，</span><span class="mi">0</span><span class="err">为未读，</span><span class="mi">1</span><span class="err">为已读</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">通知时间戳</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content_from"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表内容处</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"id_jump"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">点击某条通知时要跳转到的页面ID，如果是系统通知，则此字段不可用，固定跳转到系统通知列表页，如果是个人通知，则跳转到某帖子详情页</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"image"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表右侧处的图片URL，如果为空则显示content_to</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content_to"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表右侧处，当没有图片的时候</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名，如果是则以下字段为空字符串</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">通知列表左边头像URL</span><span class="p">],</span><span class="err">（说明：如果是系统通知，则显示YummyLOGO，此字段不可用）</span><span class="w">
+                </span><span class="nt">"username"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表用户名处，如果是系统通知则固定为Yummy，可据此判断是否为系统通知</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">]</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h2 id="get-system">[GET] system通知</h2>
 
@@ -2155,16 +2428,9 @@ app token或者user token
 <td>*</td>
 <td>用户签名，长度限16个字/字母</td>
 </tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
-</tr>
 </tbody></table>
 
 <h3 id="response">RESPONSE</h3>
-
-<p>mod=2或1 （1没有msg）</p>
 
 <table><thead>
 <tr>
@@ -2201,6 +2467,15 @@ app token或者user token
 <td>含有敏感词</td>
 </tr>
 </tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">   </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="err">(cached_data)</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 
 <h2 id="get-uplod">[GET] uplod头像</h2>
 
@@ -2406,11 +2681,23 @@ app token或者user token
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题ID</span><span class="p">]</span><span class="w">
-        </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接（用于购买按钮）</span><span class="p">]</span><span class="w">
-        </span><span class="s2">"imgurl"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">图片完整地址</span><span class="p">]</span><span class="w">
-    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题标题</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发布时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题配图完整地址</span><span class="p">]</span><span class="w">
+                </span><span class="s2">"mc_name"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主播名字</span><span class="p">]</span><span class="err">（用于直播频道）</span><span class="w">
+                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2515"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+
+    </span><span class="p">],</span><span class="w">
     </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"保存成功"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -2486,7 +2773,10 @@ app token或者user token
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发布时间</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题配图完整地址</span><span class="p">]</span><span class="w">
                 </span><span class="s2">"mc_name"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主播名字</span><span class="p">]</span><span class="err">（用于直播频道）</span><span class="w">
-                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="w">
+                </span><span class="s2">"links"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2515"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
             </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
@@ -3442,7 +3732,81 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </span><span class="err">}</span><span class="w">
 </span></code></pre>
 
-<h2 id="get-invitation-list">[GET] 帖子(invitation)list</h2>
+<h2 id="get">[GET] 直播消息（帖子）列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/articleListOfLive</code>       </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>theme_id</td>
+<td>*</td>
+<td>主题ID</td>
+</tr>
+<tr>
+<td>offset</td>
+<td></td>
+<td>可选，默认为0，表示偏移量，正数为请求下一页，负数为请求上一页，绝对值为帖子ID，此传上一次请求此接口时返回的previous或者next字段的值</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取帖子附属信息（在articleAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
+                </span><span class="s2">"hot_comment"</span><span class="err">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+            </span><span class="err">}</span><span class="p">,</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"pagination"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"previous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-33"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"915"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 体验馆帖子列表</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
@@ -3458,44 +3822,14 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </tr>
 </thead><tbody>
 <tr>
-<td>member_id</td>
-<td>*</td>
-<td>用户ID</td>
-</tr>
-<tr>
-<td>token</td>
-<td>*</td>
-<td>用户token</td>
-</tr>
-<tr>
-<td>group</td>
-<td>*</td>
-<td>值固定为theme</td>
-</tr>
-<tr>
 <td>theme_id</td>
 <td>*</td>
 <td>主题ID</td>
 </tr>
 <tr>
-<td>mc</td>
-<td>*</td>
-<td>默认为0，表示主播的ID，用于直播频道主题详情页只看主播功能，此值为themeDetail接口返回的</td>
-</tr>
-<tr>
-<td>exclude</td>
-<td>*</td>
-<td>默认为0，表示最热帖子的ID，若不为0则不输出最热帖子（因为前面已输出）</td>
-</tr>
-<tr>
 <td>page</td>
 <td></td>
 <td>第几页</td>
-</tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
 </tr>
 </tbody></table>
 
@@ -3508,8 +3842,8 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </tr>
 </thead><tbody>
 <tr>
-<td>-1</td>
-<td>缺少必传参数</td>
+<td>404</td>
+<td>参数错误</td>
 </tr>
 </tbody></table>
 
@@ -3532,7 +3866,246 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
                     </span><span class="s2">"帖子配图2完整地址"</span><span class="p">,</span><span class="w">
                     </span><span class="err">……</span><span class="w">
                 </span><span class="p">],</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"sum_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"top"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">该帖是否置顶，</span><span class="mi">1</span><span class="err">为是，</span><span class="mi">0</span><span class="err">为否</span><span class="p">],</span><span class="w">
+            </span><span class="err">}</span><span class="p">,</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 我发布的帖子列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/articleListOfMine</code>       </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td></td>
+<td>第几页</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取帖子附属信息（在articleAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">],</span><span class="err">（说明：将返回前301个字符，不满301则返回全部，可判断第301个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第301个字符替换成省略号）</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="w">
+                    </span><span class="s2">"帖子配图1完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"帖子配图2完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="err">……</span><span class="w">
+                </span><span class="p">],</span><span class="w">
+                </span><span class="nt">"sum_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"top"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">该帖是否置顶，</span><span class="mi">1</span><span class="err">为是，</span><span class="mi">0</span><span class="err">为否</span><span class="p">],</span><span class="w">
+            </span><span class="err">}</span><span class="p">,</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 我点赞（收藏）的帖子列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/articleListOfZan</code>        </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>page</td>
+<td></td>
+<td>第几页</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取帖子附属信息（在articleAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">],</span><span class="err">（说明：将返回前301个字符，不满301则返回全部，可判断第301个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第301个字符替换成省略号）</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="w">
+                    </span><span class="s2">"帖子配图1完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"帖子配图2完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="err">……</span><span class="w">
+                </span><span class="p">],</span><span class="w">
+                </span><span class="nt">"sum_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"top"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">该帖是否置顶，</span><span class="mi">1</span><span class="err">为是，</span><span class="mi">0</span><span class="err">为否</span><span class="p">],</span><span class="w">
+            </span><span class="err">}</span><span class="p">,</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 她发布的帖子列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/articleListOfHer</code>        </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>her_id</td>
+<td>*</td>
+<td>主题ID</td>
+</tr>
+<tr>
+<td>page</td>
+<td></td>
+<td>第几页</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取帖子附属信息（在articleAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">],</span><span class="err">（说明：将返回前301个字符，不满301则返回全部，可判断第301个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第301个字符替换成省略号）</span><span class="w">
+                </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="w">
+                    </span><span class="s2">"帖子配图1完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"帖子配图2完整地址"</span><span class="p">,</span><span class="w">
+                    </span><span class="err">……</span><span class="w">
+                </span><span class="p">],</span><span class="w">
+                </span><span class="nt">"sum_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -3746,7 +4319,119 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h2 id="get-user-invitation">[GET] user 发帖(invitation)接口</h2>
+<h2 id="get">[GET] 直播发帖接口</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Po/articleOfLive</code>        </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>theme_id</td>
+<td>*</td>
+<td>主题ID</td>
+</tr>
+<tr>
+<td>content</td>
+<td>*</td>
+<td>内容</td>
+</tr>
+<tr>
+<td>content_type</td>
+<td></td>
+<td>可选，默认为text，表示内容类型，text为图文，voice为语音</td>
+</tr>
+<tr>
+<td>anonymous</td>
+<td></td>
+<td>默认为0，为1表示匿名</td>
+</tr>
+<tr>
+<td>imgNum</td>
+<td></td>
+<td>默认为0，表示需要上传的图片数量，最大为1</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>参数错误</td>
+</tr>
+<tr>
+<td>400</td>
+<td>超过字数限制</td>
+</tr>
+<tr>
+<td>400</td>
+<td>含有敏感词</td>
+</tr>
+<tr>
+<td>500</td>
+<td>保存出错</td>
+</tr>
+<tr>
+<td>401</td>
+<td>未登录</td>
+</tr>
+<tr>
+<td>403</td>
+<td>未设置性趣（性取向）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>账户被封禁（禁言）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>性别未审核</td>
+</tr>
+<tr>
+<td>403</td>
+<td>性别审核中</td>
+</tr>
+<tr>
+<td>403</td>
+<td>男性不可发言</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">新发布的帖子的ID</span><span class="p">],</span><span class="w">
+        </span><span class="nt">"img"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">        
+        </span><span class="p">]</span><span class="w">
+        </span><span class="s2">"voice"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"uploadToken"</span><span class="p">:</span><span class="w"> </span><span class="err">(token)</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"imgkey"</span><span class="p">:</span><span class="w"> </span><span class="err">(图片key)</span><span class="w">
+          </span><span class="p">}</span><span class="w">     
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"保存成功"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 体验馆发帖接口</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
@@ -3761,21 +4446,6 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 <th>Description</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>idGroup</td>
-<td>*</td>
-<td>帖子列表接口Content/articleList返回的 idGroup</td>
-</tr>
-<tr>
-<td>member_id</td>
-<td>*</td>
-<td>用户ID</td>
-</tr>
-<tr>
-<td>token</td>
-<td>*</td>
-<td>用户token</td>
-</tr>
 <tr>
 <td>theme_id</td>
 <td>*</td>
@@ -3794,12 +4464,7 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 <tr>
 <td>imgNum</td>
 <td></td>
-<td>默认为0，表示需要上传的图片数量，最大为9</td>
-</tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
+<td>默认为0，表示需要上传的图片数量，最大为1</td>
 </tr>
 </tbody></table>
 
@@ -3812,24 +4477,44 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </tr>
 </thead><tbody>
 <tr>
-<td>-1</td>
+<td>404</td>
 <td>参数错误</td>
 </tr>
 <tr>
-<td>-2</td>
-<td>内容过长</td>
+<td>400</td>
+<td>超过字数限制</td>
 </tr>
 <tr>
-<td>-3</td>
+<td>400</td>
+<td>含有敏感词</td>
+</tr>
+<tr>
+<td>500</td>
 <td>保存出错</td>
 </tr>
 <tr>
-<td>-401</td>
+<td>401</td>
 <td>未登录</td>
 </tr>
 <tr>
-<td>-402</td>
-<td>未设置性趣</td>
+<td>403</td>
+<td>未设置性趣（性取向）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>账户被封禁（禁言）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>性别未审核</td>
+</tr>
+<tr>
+<td>403</td>
+<td>性别审核中</td>
+</tr>
+<tr>
+<td>403</td>
+<td>男性不可发言</td>
 </tr>
 </tbody></table>
 
@@ -3840,10 +4525,12 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">新发布的帖子的ID</span><span class="p">],</span><span class="w">
-        </span><span class="nt">"img"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="err">不用上传图片时此元素为空字符串</span><span class="w">
-            </span><span class="nt">"uploadToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[图片token]"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"imgkey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[图片key]"</span><span class="w">
-        </span><span class="p">}</span><span class="w">
+        </span><span class="nt">"img"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"uploadToken"</span><span class="p">:</span><span class="w"> </span><span class="err">(图片token)</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"imgkey"</span><span class="p">:</span><span class="w"> </span><span class="err">(图片key)</span><span class="w">
+          </span><span class="p">}</span><span class="w">     
+        </span><span class="p">]</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"保存成功"</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -3947,16 +4634,11 @@ mod |  |  默认为0，可传值有1或者2，1表示返回最简模式，2表�
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h2 id="get-discuss-list">[GET] discuss list</h2>
-
-<p>此接口采用参数组形式，group为必传参数，代表即将采用哪一组参数，可传的值有：
-article（表示某帖子下的评论列表）
-me （表示我发表的帖子列表）
-因为此接口必须登录，所以所有参数组均须传member_id和token两个参数</p>
+<h2 id="get">[GET] 某帖子下的评论列表</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
-<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/commentList</code>     </p>
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/commentListOfArticle</code>        </p>
 
 <h3 id="query-parameters">Query Parameters</h3>
 
@@ -3973,11 +4655,6 @@ me （表示我发表的帖子列表）
 <td>主题ID</td>
 </tr>
 <tr>
-<td>group</td>
-<td>*</td>
-<td>值固定为article</td>
-</tr>
-<tr>
 <td>exclude</td>
 <td></td>
 <td>默认为0，表示最热评论的ID，若不为0则不输出最热评论（因为前面已输出）</td>
@@ -3986,11 +4663,6 @@ me （表示我发表的帖子列表）
 <td>page</td>
 <td></td>
 <td>默认为1，表示第几页</td>
-</tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
 </tr>
 </tbody></table>
 
@@ -4003,7 +4675,7 @@ me （表示我发表的帖子列表）
 </tr>
 </thead><tbody>
 <tr>
-<td>-1</td>
+<td>404</td>
 <td>缺少必传参数</td>
 </tr>
 </tbody></table>
@@ -4033,7 +4705,169 @@ me （表示我发表的帖子列表）
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                 </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
-            </span><span class="err">}</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 我点赞（收藏）的评论列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/commentListOfZan</code>        </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>exclude</td>
+<td></td>
+<td>默认为0，表示最热评论的ID，若不为0则不输出最热评论（因为前面已输出）</td>
+</tr>
+<tr>
+<td>page</td>
+<td></td>
+<td>默认为1，表示第几页</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>缺少必传参数</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取评论附属信息（在commentAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"pid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[所属帖子ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="err">……（下一条）</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<h2 id="get">[GET] 我发布的评论列表</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Content/commentListOfMe</code>     </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>exclude</td>
+<td></td>
+<td>默认为0，表示最热评论的ID，若不为0则不输出最热评论（因为前面已输出）</td>
+</tr>
+<tr>
+<td>page</td>
+<td></td>
+<td>默认为1，表示第几页</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>404</td>
+<td>缺少必传参数</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"idGroup"</span><span class="p">:</span><span class="w"> </span><span class="err">帖子ID组，用于获取评论附属信息（在commentAtta接口中使用）</span><span class="w">
+        </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"pid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[所属帖子ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
             </span><span class="p">}</span><span class="w">
