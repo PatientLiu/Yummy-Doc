@@ -1807,7 +1807,7 @@ app token或者user token
 <tr>
 <td>her_id</td>
 <td>*</td>
-<td>主题ID</td>
+<td>UID</td>
 </tr>
 <tr>
 <td>page</td>
@@ -2178,6 +2178,7 @@ app token或者user token
                 </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播2.0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容\n\n直播内容直播内容直播内容直播内容\n\n\n直播内容直播内容直播内容"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"mc_uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"sum_article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
@@ -2259,13 +2260,19 @@ app token或者user token
         </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"msg_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="err">（消息类型，有纯文本text、纯图片img、图文temg、语音voice）</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
+                </span><span class="s2">"imgurl"</span><span class="err">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="err">（图片地址）</span><span class="w">
+                </span><span class="nt">"voiceurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="err">（语音地址）</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则avatar,nickname,vip均为空字符串）</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"is_mc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否主播，0表示否，1表示是）</span><span class="w">
+                </span><span class="nt">"is_sender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否发送者，0表示否，1表示是）</span><span class="w">
+                </span><span class="nt">"anonymous_to"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则avatar_to,nickname_to,vip_to均为空字符串）</span><span class="w">
                 </span><span class="nt">"uid_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的uid</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的vip等级</span><span class="p">]</span><span class="w">
@@ -3030,6 +3037,7 @@ app token或者user token
                 </span><span class="s2">"sum_click"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题点击量</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题活跃量</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"sum_article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[主题下帖子总数]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[主题被点赞数]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[用户是否已收藏（喜欢）该主题]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="w">
             </span><span class="p">},</span><span class="w">               
@@ -3468,14 +3476,40 @@ app token或者user token
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"删除成功"</span><span class="w">
-    </span><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"删除成功"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"theme_id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子所属主题的ID</span><span class="p">]</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-</span><span class="err">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
 </span></code></pre>
 
 <h1 id="notification">Notification</h1>
+
+<p>通知推送采用极光推送服务，分为系统通知栏通知和APP内通知两部分，APP内通知分为通知列表通知和直播新消息通知两种，数据结构分别如下：</p>
+
+<p>通知列表通知：</p>
+
+<p>{</p>
+
+<p>&lsquo;push_type&rsquo;: &#39;comment&rsquo;,</p>
+
+<p>&#39;type&rsquo;: &#39;notice&rsquo;,（与Notice/noticeList返回的type相同）</p>
+
+<p>&#39;id_jump&rsquo;: &#39;notice&#39;（与Notice/noticeList返回的id_jump相同）</p>
+
+<p>}</p>
+
+<p>直播新消息通知：</p>
+
+<p>{</p>
+
+<p>&#39;push_type&rsquo;: &#39;live_msg&rsquo;,</p>
+
+<p>&#39;id&rsquo;: &#39;123&rsquo;,（新消息所属的直播ID）</p>
+
+<p>&#39;num&rsquo;: &#39;1&#39;（新消息数量）</p>
+
+<p>}</p>
 
 <h2 id="get">[GET]用户通知列表</h2>
 
