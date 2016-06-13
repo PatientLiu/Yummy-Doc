@@ -161,6 +161,12 @@
 
 <p>status: -417  status code: 400  // 邀请码错误或已失效</p>
 
+<p>status: -403  status code: 403  // 账号被禁言</p>
+
+<p>status: -406  status code: 403  // 性别审核中</p>
+
+<p>status: -407  status code: 403  // 性别为男</p>
+
 <p>status code 401</p>
 
 <p>status: -401  status code: 401  // 未授权（未登录）</p>
@@ -169,13 +175,7 @@
 
 <p>status: -402  status code: 403  // 未设置性取向</p>
 
-<p>status: -403  status code: 403  // 账号被禁言</p>
-
 <p>status: -405  status code: 403  // 性别未审核</p>
-
-<p>status: -406  status code: 403  // 性别审核中</p>
-
-<p>status: -407  status code: 403  // 性别为男</p>
 
 <p>status code 404</p>
 
@@ -948,7 +948,7 @@ app token或者user token
 <tr>
 <td>uid</td>
 <td></td>
-<td>要查看的用户ID（原来的member_id）</td>
+<td>要查看的用户ID</td>
 </tr>
 </tbody></table>
 
@@ -984,12 +984,13 @@ app token或者user token
 <pre class="highlight json"><code><span class="p">{</span><span class="w">   </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"member_id"</span><span class="p">:</span><span class="w"> </span><span class="err">用户ID</span><span class="w">
+        </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="err">用户ID</span><span class="w">
         </span><span class="s2">"nickname"</span><span class="err">:</span><span class="w"> </span><span class="err">用户昵称</span><span class="p">,</span><span class="w">
         </span><span class="nt">"sex"</span><span class="p">:</span><span class="w"> </span><span class="err">用户性别，</span><span class="mi">0</span><span class="err">：未设置，</span><span class="mi">1</span><span class="err">：女性，</span><span class="mi">2</span><span class="err">：男性，</span><span class="mi">3</span><span class="err">：审核中</span><span class="w">
         </span><span class="s2">"sexfav"</span><span class="err">:</span><span class="w"> </span><span class="err">性趣（性取向），</span><span class="mi">0</span><span class="err">（未设置），</span><span class="mi">1</span><span class="err">（女女），</span><span class="mi">2</span><span class="err">（男女），</span><span class="mi">3</span><span class="err">（不限），</span><span class="mi">0</span><span class="err">和</span><span class="mi">3</span><span class="err">作同样处理</span><span class="w">
         </span><span class="s2">"signature"</span><span class="err">:</span><span class="w"> </span><span class="err">用户签名</span><span class="p">,</span><span class="w">
         </span><span class="nt">"mypost"</span><span class="p">:</span><span class="w"> </span><span class="err">用户发表的帖子数量</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"live"</span><span class="p">:</span><span class="w"> </span><span class="err">(我的直播数)</span><span class="p">,</span><span class="w">
         </span><span class="nt">"follow"</span><span class="p">:</span><span class="w"> </span><span class="err">用户关注（其他用户）数</span><span class="w">
         </span><span class="s2">"fans"</span><span class="err">:</span><span class="w"> </span><span class="err">用户粉丝数</span><span class="w">
         </span><span class="s2">"vip"</span><span class="err">:</span><span class="w"> </span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="w">
@@ -1104,21 +1105,6 @@ app token或者user token
 <th>Description</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>member_id</td>
-<td>*</td>
-<td>已登录的用户ID</td>
-</tr>
-<tr>
-<td>token</td>
-<td>*</td>
-<td>已登录的用户token</td>
-</tr>
-<tr>
-<td>mod</td>
-<td></td>
-<td>默认为0，可传值有1或者2，1表示返回最简模式，2表示debug模式</td>
-</tr>
 </tbody></table>
 
 <h3 id="response">RESPONSE</h3>
@@ -1564,15 +1550,15 @@ app token或者user token
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h2 id="get-amp">[GET] 用户占座过的直播列表&amp;主播发起过的直播列表</h2>
+<h2 id="get-amp">[GET] 用户收藏（点赞）的直播列表&amp;主播发起过的直播列表</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
-<p>用户占座过的</p>
+<p>用户收藏（点赞）的直播列表</p>
 
 <p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfSeats</code></p>
 
-<p>主播发起过的</p>
+<p>主播发起过的直播列表</p>
 
 <p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfMC</code></p>
 
@@ -2208,6 +2194,74 @@ app token或者user token
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
+<h2 id="get">[GET] 给直播点赞（即喜欢、收藏）</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/Po/zanLive</code>     </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>target_id</td>
+<td>*</td>
+<td>日报（主题）的ID</td>
+</tr>
+<tr>
+<td>op</td>
+<td></td>
+<td>默认为1，可传的值有：1(正向操作), -1(反向操作，即取消)</td>
+</tr>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Body Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>1</td>
+<td>succ</td>
+</tr>
+<tr>
+<td>401</td>
+<td>-401</td>
+<td>未登录 ｜</td>
+</tr>
+<tr>
+<td>404</td>
+<td>-404</td>
+<td>客户端错误</td>
+</tr>
+<tr>
+<td>500</td>
+<td>-500</td>
+<td>服务器错误</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"succ"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
 <h2 id="get">[GET] 直播中所有发言（帖子）列表</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
@@ -2834,6 +2888,7 @@ app token或者user token
                 </span><span class="s2">"sum_click"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题点击量</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">主题活跃量</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"sum_article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[主题下帖子总数]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[主题被点赞数]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[用户是否已收藏（喜欢）该主题]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">外部链接</span><span class="p">]</span><span class="err">（目前可用于玩具购买按钮）</span><span class="w">
             </span><span class="p">},</span><span class="w">               
@@ -3287,24 +3342,26 @@ app token或者user token
                     </span><span class="err">……</span><span class="w">
                 </span><span class="p">],</span><span class="w">
             </span><span class="err">}</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">   </span><span class="err">（最热评论）</span><span class="w">
-                </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论ID]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"pid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[所属帖子ID]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
-                </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否赞过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否呵呵过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
-                </span><span class="s2">"uid"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="w">
-                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
-                </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
-            </span><span class="err">}</span><span class="w">
+            </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">   </span><span class="err">（最热评论）</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论ID]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"pid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[所属帖子ID]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
+                    </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否赞过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否呵呵过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                    </span><span class="s2">"uid"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="w">
+                    </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
+                    </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
+                </span><span class="err">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
         </span><span class="p">}</span><span class="w">
     </span><span class="p">},</span><span class="w">
     </span><span class="nt">"msg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"获取成功"</span><span class="w">
@@ -3485,9 +3542,11 @@ app token或者user token
 
 <h1 id="notification">Notification</h1>
 
-<p>通知推送采用极光推送服务，分为系统通知栏通知和APP内通知两部分，APP内通知分为通知列表通知和直播新消息通知两种，数据结构分别如下：</p>
+<p>通知推送采用极光推送服务，分别有如下几种通知：</p>
 
 <p>通知列表通知：</p>
+
+<p>既在系统通知栏弹出，也在通知列表里列出，收到此类通知时，底部通知tag应弹出红点，数据结构如下：</p>
 
 <p>{</p>
 
@@ -3499,7 +3558,23 @@ app token或者user token
 
 <p>}</p>
 
+<p>系统通知栏通知：</p>
+
+<p>此类通知仅在系统通知栏弹出，数据结构如下：</p>
+
+<p>{</p>
+
+<p>&#39;push_type&rsquo;: &#39;system&rsquo;,</p>
+
+<p>&#39;type&rsquo;: &#39;theme_live&rsquo;,（可能的值有：theme_live, theme_daily, theme_toy，分别代表直播、日报、体验馆）</p>
+
+<p>&#39;id_jump&rsquo;: &#39;11&#39;（表示相应主题的ID）</p>
+
+<p>}</p>
+
 <p>直播新消息通知：</p>
+
+<p>此类通知仅用于直播详情页的新消息提醒，数据结构如下：</p>
 
 <p>{</p>
 
@@ -3735,12 +3810,12 @@ app token或者user token
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">{</span><span class="w">
-                </span><span class="nt">"member_id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户签名</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户VIP等级</span><span class="p">]</span><span class="w">
                 </span><span class="s2">"avatar"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户头像地址</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"followed"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="err">表示单向关注，</span><span class="mi">1</span><span class="err">表示相互关注</span><span class="p">]</span><span class="w">
+                </span><span class="s2">"followStatus"</span><span class="err">:(</span><span class="mi">0</span><span class="err">表示没有关注，</span><span class="mi">1</span><span class="err">表示单向关注，</span><span class="mi">2</span><span class="err">表示互相关注)</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
@@ -3805,12 +3880,12 @@ app token或者user token
     </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">{</span><span class="w">
-                </span><span class="nt">"member_id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户签名</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户VIP等级</span><span class="p">]</span><span class="w">
                 </span><span class="s2">"avatar"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="err">用户头像地址</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"followed"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="err">表示单向关注，</span><span class="mi">1</span><span class="err">表示相互关注</span><span class="p">]</span><span class="w">
+                </span><span class="s2">"followStatus"</span><span class="err">:(</span><span class="mi">0</span><span class="err">表示没有关注，</span><span class="mi">1</span><span class="err">表示单向关注，</span><span class="mi">2</span><span class="err">表示互相关注)</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
@@ -3962,11 +4037,11 @@ app token或者user token
 
 <h2 id="get-check-version">[GET] check最新version</h2>
 
-<p>此接口版本号固定为V0，可在请求报文头部传 platform ，可选值有：android, ios</p>
+<p>此接口版本号固定为VA，可在请求报文头部传 platform ，可选值有：android, ios</p>
 
 <h3 id="http-request">HTTP REQUEST</h3>
 
-<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V0/App/latestVersion</code></p>
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/VA/App/latestVersion</code></p>
 
 <h3 id="query-parameters">Query Parameters</h3>
 
@@ -4117,16 +4192,6 @@ app token或者user token
 <th>Description</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>member_id</td>
-<td>*</td>
-<td>用户ID</td>
-</tr>
-<tr>
-<td>token</td>
-<td>*</td>
-<td>用户token</td>
-</tr>
 <tr>
 <td>article_id</td>
 <td>*</td>
