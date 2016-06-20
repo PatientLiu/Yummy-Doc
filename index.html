@@ -143,6 +143,14 @@
 
 <p>status: -400  status code: 400  // 用户请求错误（须提示用户）</p>
 
+<p>status: -403  status code: 400  // 账号被禁言</p>
+
+<p>status: -404  status code: 400  // 客户端请求错误</p>
+
+<p>status: -406  status code: 400  // 性别审核中</p>
+
+<p>status: -407  status code: 400  // 性别为男</p>
+
 <p>status: -408  status code: 400  // 超过字数限制</p>
 
 <p>status: -409  status code: 400  // 含有敏感词</p>
@@ -161,11 +169,7 @@
 
 <p>status: -417  status code: 400  // 邀请码错误或已失效</p>
 
-<p>status: -403  status code: 403  // 账号被禁言</p>
-
-<p>status: -406  status code: 403  // 性别审核中</p>
-
-<p>status: -407  status code: 403  // 性别为男</p>
+<p>status: -418  status code: 400  // 不能关注自己</p>
 
 <p>status code 401</p>
 
@@ -176,10 +180,6 @@
 <p>status: -402  status code: 403  // 未设置性取向</p>
 
 <p>status: -405  status code: 403  // 性别未审核</p>
-
-<p>status code 404</p>
-
-<p>status: -404  status code: 404  // 客户端请求错误（不须提示用户）</p>
 
 <h2 id="about-cached-data">About Cached Data</h2>
 
@@ -758,11 +758,16 @@ app token或者user token
 </tr>
 <tr>
 <td>400</td>
+<td>-403</td>
+<td>账号被封禁｜</td>
+</tr>
+<tr>
+<td>400</td>
 <td>-415</td>
 <td>账号不存在（未注册）｜</td>
 </tr>
 <tr>
-<td>404</td>
+<td>400</td>
 <td>-416</td>
 <td>密码错误</td>
 </tr>
@@ -1416,6 +1421,50 @@ app token或者user token
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
+<h2 id="get">[GET] 获取当前用户的个人资料（缓存数据）</h2>
+
+<h3 id="http-request">HTTP REQUEST</h3>
+
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=/V2/User/getUserData</code>   </p>
+
+<h3 id="query-parameters">Query Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+</tbody></table>
+
+<h3 id="response">RESPONSE</h3>
+
+<table><thead>
+<tr>
+<th>Status Code</th>
+<th>Body Status</th>
+<th>Msg</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>1</td>
+<td>succ</td>
+</tr>
+<tr>
+<td>401</td>
+<td>-401</td>
+<td>未登录 ｜</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+<p>以上命令返回JSON的结构是这样的：</p>
+</blockquote>
+
+<p>cached data</p>
+
 <h2 id="get">[GET] 我收藏（喜欢）的玩具（主题）列表</h2>
 
 <h3 id="http-request">HTTP REQUEST</h3>
@@ -1556,7 +1605,7 @@ app token或者user token
 
 <p>用户收藏（点赞）的直播列表</p>
 
-<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfSeats</code></p>
+<p><code class="prettyprint">GET http://test.yummylife.net/index.php?s=V2/Content/themeListOfZanLive</code></p>
 
 <p>主播发起过的直播列表</p>
 
@@ -1685,7 +1734,7 @@ app token或者user token
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -1760,7 +1809,7 @@ app token或者user token
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -1840,7 +1889,7 @@ app token或者user token
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -1911,12 +1960,12 @@ app token或者user token
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
-                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                 </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
@@ -1989,12 +2038,12 @@ app token或者user token
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
-                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                 </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
@@ -2165,6 +2214,7 @@ app token或者user token
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1447013250"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容直播内容\n\n直播内容直播内容直播内容直播内容\n\n\n直播内容直播内容直播内容"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"mc_uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"is_mc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w"> </span><span class="err">(当前登录的用户是否主播，1为是，0为否)</span><span class="w">
                 </span><span class="nt">"mc_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"sum_article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"sum_active"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
@@ -2176,7 +2226,7 @@ app token或者user token
                 </span><span class="nt">"signature"</span><span class="p">:</span><span class="w"> </span><span class="s2">"u:d83du:de4f"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"av_6076e810e0581170ca966c860287f5228c1296ae094c8cb973f00822e0b24be9"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"sum_click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（表示当前用户是否已收藏本主题）</span><span class="w">
                 </span><span class="nt">"previously"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
                     </span><span class="p">{</span><span class="w">
                         </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"92"</span><span class="p">,</span><span class="w">
@@ -2184,7 +2234,7 @@ app token或者user token
                         </span><span class="nt">"imgurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://img-u.yummylife.net/tp_a8d226fe1394c5d9b1c6ff11731485da3d755363a0aeab3cfb8010ea0591854b"</span><span class="w">
                     </span><span class="p">}</span><span class="w">
                 </span><span class="p">],</span><span class="w">
-                </span><span class="nt">"followStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"followStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（表示当前用户对本主题的主播的关注状态）</span><span class="w">
                 </span><span class="nt">"push_tag"</span><span class="p">:</span><span class="w"> </span><span class="err">新消息提醒推送标签（string）</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"video"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://7xp6o0.media1.z0.glb.clouddn.com/demo.mov"</span><span class="w">
             </span><span class="p">}</span><span class="w">
@@ -2313,20 +2363,24 @@ app token或者user token
         </span><span class="nt">"now"</span><span class="p">:</span><span class="w"> </span><span class="err">服务器当前时间戳</span><span class="p">,</span><span class="w">
         </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"msg_type"</span><span class="p">:</span><span class="s2">"time"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"content"</span><span class="p">:</span><span class="s2">"(unix timestamp)"</span><span class="w">
+            </span><span class="p">},</span><span class="w">        
+            </span><span class="p">{</span><span class="w">
                 </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"msg_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="err">（消息类型，有纯文本text、纯图片img、图文temg、语音voice）</span><span class="w">
+                </span><span class="nt">"msg_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="err">（消息类型，有纯文本text、纯图片img、图文temg、语音voice、时间time）</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
                 </span><span class="s2">"imgurl"</span><span class="err">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="err">（图片地址）</span><span class="w">
                 </span><span class="nt">"voiceurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w"> </span><span class="err">（语音地址）</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则avatar,nickname,vip均为空字符串）</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"is_mc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否主播，0表示否，1表示是）</span><span class="w">
                 </span><span class="nt">"is_sender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否发送者，0表示否，1表示是）</span><span class="w">
-                </span><span class="nt">"anonymous_to"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则avatar_to,nickname_to,vip_to均为空字符串）</span><span class="w">
+                </span><span class="nt">"anonymous_to"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的uid</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的昵称</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">要@的用户的vip等级</span><span class="p">]</span><span class="w">
@@ -2402,7 +2456,7 @@ app token或者user token
                 </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -2481,7 +2535,7 @@ app token或者user token
                 </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">帖子ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖时间</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">帖子内容</span><span class="p">]</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -2575,6 +2629,18 @@ app token或者user token
 <td>含有敏感词</td>
 </tr>
 <tr>
+<td>400</td>
+<td>性别审核中</td>
+</tr>
+<tr>
+<td>400</td>
+<td>男性不可发言</td>
+</tr>
+<tr>
+<td>400</td>
+<td>账户被封禁（禁言）</td>
+</tr>
+<tr>
 <td>500</td>
 <td>保存出错</td>
 </tr>
@@ -2584,23 +2650,11 @@ app token或者user token
 </tr>
 <tr>
 <td>403</td>
-<td>未设置性趣（性取向）</td>
+<td>-402未设置性趣（性取向）</td>
 </tr>
 <tr>
 <td>403</td>
-<td>账户被封禁（禁言）</td>
-</tr>
-<tr>
-<td>403</td>
-<td>性别未审核</td>
-</tr>
-<tr>
-<td>403</td>
-<td>性别审核中</td>
-</tr>
-<tr>
-<td>403</td>
-<td>男性不可发言</td>
+<td>-405性别未审核</td>
 </tr>
 </tbody></table>
 
@@ -3233,6 +3287,12 @@ app token或者user token
                 </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
+                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"top"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">该帖是否置顶，</span><span class="mi">1</span><span class="err">为是，</span><span class="mi">0</span><span class="err">为否</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"hot_comment"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
                     </span><span class="p">{</span><span class="w">
                     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论ID]"</span><span class="p">,</span><span class="w">
@@ -3240,24 +3300,18 @@ app token或者user token
                     </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
                     </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
-                    </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（评论者是否匿名，1为是，0为否）</span><span class="w">
                     </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                     </span><span class="s2">"uid"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="w">
-                    </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                     </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                     </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="w">
                     </span><span class="p">}</span><span class="w">
                 </span><span class="p">]</span><span class="w">
-                </span><span class="s2">"anonymous"</span><span class="err">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
-                </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人ID</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"top"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">该帖是否置顶，</span><span class="mi">1</span><span class="err">为是，</span><span class="mi">0</span><span class="err">为否</span><span class="p">],</span><span class="w">
-            </span><span class="err">}</span><span class="p">,</span><span class="w">
+            </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w">
                 </span><span class="err">……（下一条）</span><span class="w">
             </span><span class="p">}</span><span class="w">
@@ -3331,7 +3385,7 @@ app token或者user token
                 </span><span class="nt">"sum_hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[呵呵数]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否赞过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否呵呵过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">是否匿名</span><span class="p">],</span><span class="err">（说明：如果为1，则以下字段均为空字符串）</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[发帖人ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人头像完整地址</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">发帖人昵称</span><span class="p">],</span><span class="w">
@@ -3351,12 +3405,12 @@ app token或者user token
                     </span><span class="nt">"sum_zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否赞过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"hehe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[当前登录用户是否呵呵过此条，1为是，0或空字符串为否]"</span><span class="p">,</span><span class="w">
-                    </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                     </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                     </span><span class="s2">"uid"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="w">
-                    </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                     </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                     </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                     </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
@@ -3426,6 +3480,18 @@ app token或者user token
 <td>含有敏感词</td>
 </tr>
 <tr>
+<td>400</td>
+<td>性别审核中</td>
+</tr>
+<tr>
+<td>400</td>
+<td>男性不可发言</td>
+</tr>
+<tr>
+<td>400</td>
+<td>账户被封禁（禁言）</td>
+</tr>
+<tr>
 <td>500</td>
 <td>保存出错</td>
 </tr>
@@ -3435,23 +3501,11 @@ app token或者user token
 </tr>
 <tr>
 <td>403</td>
-<td>未设置性趣（性取向）</td>
+<td>-402未设置性趣（性取向）</td>
 </tr>
 <tr>
 <td>403</td>
-<td>账户被封禁（禁言）</td>
-</tr>
-<tr>
-<td>403</td>
-<td>性别未审核</td>
-</tr>
-<tr>
-<td>403</td>
-<td>性别审核中</td>
-</tr>
-<tr>
-<td>403</td>
-<td>男性不可发言</td>
+<td>-405性别未审核</td>
 </tr>
 </tbody></table>
 
@@ -3673,7 +3727,7 @@ app token或者user token
                 </span><span class="nt">"id_jump"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">点击某条通知时要跳转到的页面ID，如果是系统通知，则此字段不可用，固定跳转到系统通知列表页，如果是个人通知，则跳转到某帖子详情页</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"image"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表右侧处的图片URL，如果为空则显示content_to</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"content_to"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表右侧处，当没有图片的时候</span><span class="p">],</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">是否匿名，如果是则以下字段为空字符串</span><span class="p">],</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">通知列表左边头像URL</span><span class="p">],</span><span class="err">（说明：如果是系统通知，则显示YummyLOGO，此字段不可用）</span><span class="w">
                 </span><span class="nt">"username"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">显示在通知列表用户名处，如果是系统通知则固定为Yummy，可据此判断是否为系统通知</span><span class="p">],</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="err">vip等级，类型为整数，</span><span class="mi">0</span><span class="err">表示普通，</span><span class="mi">1</span><span class="err">表示红人，</span><span class="mi">2</span><span class="err">表示大V</span><span class="p">]</span><span class="w">
@@ -3937,19 +3991,44 @@ app token或者user token
 <td>succ</td>
 </tr>
 <tr>
-<td>401</td>
-<td>-401</td>
-<td>未登录</td>
+<td>400</td>
+<td>不能关注自己</td>
+<td></td>
 </tr>
 <tr>
 <td>400</td>
-<td>-400</td>
-<td>不能关注自己</td>
+<td>性别审核中</td>
+<td></td>
 </tr>
 <tr>
-<td>404</td>
-<td>-404</td>
-<td>客户端错误</td>
+<td>400</td>
+<td>男性不可关注</td>
+<td></td>
+</tr>
+<tr>
+<td>400</td>
+<td>账户被封禁（禁言）</td>
+<td></td>
+</tr>
+<tr>
+<td>500</td>
+<td>保存出错</td>
+<td></td>
+</tr>
+<tr>
+<td>401</td>
+<td>未登录</td>
+<td></td>
+</tr>
+<tr>
+<td>403</td>
+<td>-402未设置性趣（性取向）</td>
+<td></td>
+</tr>
+<tr>
+<td>403</td>
+<td>-405性别未审核</td>
+<td></td>
 </tr>
 </tbody></table>
 
@@ -4155,12 +4234,12 @@ app token或者user token
                 </span><span class="nt">"time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论时间]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论内容]"</span><span class="p">,</span><span class="err">（说明：将返回前141个字符，不满141则返回全部，可判断第141个字符，如果是空字符串，则已返回全部内容；如果不是空字符串，则把第141个字符替换成省略号）</span><span class="w">
                 </span><span class="nt">"zan"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[赞数]"</span><span class="p">,</span><span class="w">
-                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[该评论是否匿名，若是则以下四个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"anonymous"</span><span class="p">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"uid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人昵称]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"avatar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人头像完整地址]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"vip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论人vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
-                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象是否匿名，若是则以下三个字段为空字符串]"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"anonymous_to"</span><span class="err">:</span><span class="w">  </span><span class="s2">"0"</span><span class="p">,</span><span class="err">（被评论者是否匿名，1为是，0为否）</span><span class="w">
                 </span><span class="nt">"vip_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象vip等级，类型为整数，0表示普通，1表示红人，2表示大V]"</span><span class="w">
                 </span><span class="s2">"uid_to"</span><span class="err">:</span><span class="w"> </span><span class="s2">"[评论对象ID]"</span><span class="p">,</span><span class="w">
                 </span><span class="nt">"nickname_to"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[评论对象昵称]"</span><span class="p">,</span><span class="w">
@@ -4228,24 +4307,44 @@ app token或者user token
 </tr>
 </thead><tbody>
 <tr>
-<td>-1</td>
+<td>404</td>
 <td>客户端错误</td>
 </tr>
 <tr>
-<td>-2</td>
-<td>内容过长</td>
+<td>400</td>
+<td>超过字数限制</td>
 </tr>
 <tr>
-<td>-3</td>
+<td>400</td>
+<td>含有敏感词</td>
+</tr>
+<tr>
+<td>400</td>
+<td>性别审核中</td>
+</tr>
+<tr>
+<td>400</td>
+<td>男性不可发言</td>
+</tr>
+<tr>
+<td>400</td>
+<td>账户被封禁（禁言）</td>
+</tr>
+<tr>
+<td>500</td>
 <td>保存出错</td>
 </tr>
 <tr>
-<td>-401</td>
+<td>401</td>
 <td>未登录</td>
 </tr>
 <tr>
-<td>-402</td>
-<td>未设置性趣</td>
+<td>403</td>
+<td>-402未设置性趣（性取向）</td>
+</tr>
+<tr>
+<td>403</td>
+<td>-405性别未审核</td>
 </tr>
 </tbody></table>
 
